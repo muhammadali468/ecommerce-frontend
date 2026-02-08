@@ -13,7 +13,7 @@ const AdminNavbar = () => {
     const token = localStorage.getItem("admin_token");
     const handleLogout = async () => {
         try {
-            const res = await axios.post("http://localhost:5000/api/admin/logout", { token })
+            const res = await axios.post("https://ecommerce-backend-production-b154.up.railway.app/api/admin/logout", { token })
             alert(res.data.msg)
             if (res.data.sts === 0) {
                 localStorage.removeItem("admin_id");

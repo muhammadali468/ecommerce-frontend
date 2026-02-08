@@ -6,7 +6,7 @@ import ProductCard from "../Components/ProductCard";
 const Shop = () => {
     const [products, setProducts] = useState([])
     const handleFetchProducts = async () => {
-        const res = await axios.get("http://localhost:5000/api/products/get");
+        const res = await axios.get("https://ecommerce-backend-production-b154.up.railway.app/api/products/get");
         if (res) {
             setProducts(res.data.product);
         }
@@ -69,7 +69,7 @@ const Shop = () => {
                         {products.filter((product)=> product.productStatus === "enable").map((product) => (
                             <ProductCard
                                 key={product._id}
-                                image={"http://localhost:5000/products/" + product.productThumbnailImg}
+                                image={"https://ecommerce-backend-production-b154.up.railway.app/products/" + product.productThumbnailImg}
                                 name={product.productName}
                                 price={product.productPrice}
                                 salePrice={product.productSalePrice}

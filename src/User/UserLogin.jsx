@@ -18,7 +18,7 @@ const UserLogin = () => {
     const handleLogin = async (e) => {
         e.preventDefault()
         try {
-            const res = await axios.post("http://localhost:5000/api/user/login", user)
+            const res = await axios.post("https://ecommerce-backend-production-b154.up.railway.app/api/user/login", user)
             alert(res.data.msg)
             console.log(res.data)
             if (res.data.sts === 0) {

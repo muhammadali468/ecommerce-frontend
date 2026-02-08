@@ -26,11 +26,11 @@ const AddProduct = () => {
     const [files, setFiles] = useState([])
 
     const handleViewAllCategories = async () => {
-        const allCat = await axios.get("http://localhost:5000/api/category/viewAll")
+        const allCat = await axios.get("https://ecommerce-backend-production-b154.up.railway.app/api/category/viewAll")
         setCategoriesData(allCat.data.cat)
     }
     const handleViewAllProducts = async () => {
-        const allProductsRes = await axios.get("http://localhost:5000/api/products/get");
+        const allProductsRes = await axios.get("https://ecommerce-backend-production-b154.up.railway.app/api/products/get");
         setProducts(allProductsRes.data.product)
     }
     const handleChange = (e) => {
@@ -56,7 +56,7 @@ const AddProduct = () => {
             fd.append("productThumbnailImg", file);
             console.log([...fd.entries()]);
             try {
-                const res = await axios.post("http://localhost:5000/api/product/add", fd);
+                const res = await axios.post("https://ecommerce-backend-production-b154.up.railway.app/api/product/add", fd);
                 alert(res.data.msg)
                 handleViewAllProducts()
             } catch (error) {
@@ -71,7 +71,7 @@ const AddProduct = () => {
 
     const handleDeleteProduct = async (id) => {
         try {
-            const res = await axios.delete(`http://localhost:5000/api/product/delete/${id}`)
+            const res = await axios.delete(`https://ecommerce-backend-production-b154.up.railway.app/api/product/delete/${id}`)
             alert(res.data.msg)
             if (res.data.sts === 0) {
                 handleViewAllProducts()
@@ -95,7 +95,7 @@ const AddProduct = () => {
 
     const handleChangeStatus = async (status) => {
         try {
-            const res = await axios.post("http://localhost:5000/api/product/update", {
+            const res = await axios.post("https://ecommerce-backend-production-b154.up.railway.app/api/product/update", {
                 productIds: selectedRows,
                 productStatuses: status
             })
@@ -110,7 +110,7 @@ const AddProduct = () => {
 
     const handleDeleteProducts = async () => {
         try {
-            const res = await axios.post("http://localhost:5000/api/product/delete/multiple", {
+            const res = await axios.post("https://ecommerce-backend-production-b154.up.railway.app/api/product/delete/multiple", {
                 productIds: selectedRows,
             })
             alert(res.data.msg)
@@ -138,7 +138,7 @@ const AddProduct = () => {
         }
         formData.append("productId", productSelected)
         try {
-            const res = await axios.post(`http://localhost:5000/api/product/uploadimages/${productSelected}`, formData, {
+            const res = await axios.post(`https://ecommerce-backend-production-b154.up.railway.app/api/product/uploadimages/${productSelected}`, formData, {
                 headers:{"Content-Type":"multipart/form-data"}
             })
             if(res){

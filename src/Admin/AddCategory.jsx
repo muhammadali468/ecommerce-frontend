@@ -8,7 +8,7 @@ const AddCategory = () => {
     const [file, setFile] = useState(null);
     const [categoriesData, setCategoriesData] = useState([])
     const handleViewAllCategories = async () => {
-        const allCat = await axios.get("http://localhost:5000/api/category/viewAll")
+        const allCat = await axios.get("https://ecommerce-backend-production-b154.up.railway.app/api/category/viewAll")
         setCategoriesData(allCat.data.cat)
     }
     // handleViewAllCategories()
@@ -31,7 +31,7 @@ const AddCategory = () => {
         if (file) {
             formData.append("cat_img", file)
             try {
-                const res = await axios.post("http://localhost:5000/api/category/add", formData);
+                const res = await axios.post("https://ecommerce-backend-production-b154.up.railway.app/api/category/add", formData);
                 alert(res.data.msg);
             } catch (error) {
                 console.log(error)
@@ -48,7 +48,7 @@ const AddCategory = () => {
     }
     const handleDeleteCategory = async (id) => {
         try {
-            const res = await axios.delete(`http://localhost:5000/api/category/delete/${id}`);
+            const res = await axios.delete(`https://ecommerce-backend-production-b154.up.railway.app/api/category/delete/${id}`);
             alert(res.data.msg)
             handleViewAllCategories()
         } catch (error) {
@@ -110,7 +110,7 @@ const AddCategory = () => {
                             {categoriesData.map((cat) => (
                                 <tr key={cat._id} className="hover:bg-gray-100">
                                     <td className="p-3 border-b">
-                                        <img src={`http://localhost:5000/categories/${cat.cat_img}`} alt={cat.cat_name} className="w-16 h-16 object-cover p-3 rounded border border-black" />
+                                        <img src={`https://ecommerce-backend-production-b154.up.railway.app/categories/${cat.cat_img}`} alt={cat.cat_name} className="w-16 h-16 object-cover p-3 rounded border border-black" />
                                     </td>
                                     <td className="p-3 border-b">{cat.cat_name}</td>
                                     <td className="p-3 border-b">

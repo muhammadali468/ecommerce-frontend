@@ -13,7 +13,7 @@ const AdminForgotPassword = () => {
     const handleForgotPassword = async (e) => {
         e.preventDefault();
         try {
-            const res = await axios.post("http://localhost:5000/api/admin/reset-password-link", { adminEmail })
+            const res = await axios.post("https://ecommerce-backend-production-b154.up.railway.app/api/admin/reset-password-link", { adminEmail })
             console.log("res", res)
         } catch (error) {
             console.log("error", error)

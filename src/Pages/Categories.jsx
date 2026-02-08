@@ -7,7 +7,7 @@ const Categories = () => {
 
     const [categoriesData, setCategoriesData] = useState([])
     const handleViewAllCategories = async () => {
-        const allCat = await axios.get("http://localhost:5000/api/category/viewAll")
+        const allCat = await axios.get("https://ecommerce-backend-production-b154.up.railway.app/api/category/viewAll")
         setCategoriesData(allCat.data.cat)
     }
     useEffect(() => {

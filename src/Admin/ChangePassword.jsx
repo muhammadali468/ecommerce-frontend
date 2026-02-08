@@ -30,7 +30,7 @@ const ChangePassword = () => {
     const handleChangePassword = async (e) => {
         e.preventDefault()
         try{
-            const res = await axios.put("http://localhost:5000/api/admin/change-password", passwords);
+            const res = await axios.put("https://ecommerce-backend-production-b154.up.railway.app/api/admin/change-password", passwords);
             console.log(res)
             alert(res.data.msg)
         }
