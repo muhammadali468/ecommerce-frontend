@@ -8,11 +8,13 @@ const Shop = () => {
     const handleFetchProducts = async () => {
         const res = await axios.get("https://ecommerce-backend-production-b154.up.railway.app/api/products/get");
         if (res) {
+            console.log(res.data.product)
             setProducts(res.data.product);
         }
     }
     useEffect(() => {
         handleFetchProducts()
+        console.log(products)
     }, [])
     return (
         <div>
