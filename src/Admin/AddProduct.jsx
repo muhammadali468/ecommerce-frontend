@@ -45,7 +45,6 @@ const AddProduct = () => {
     const handleFileChange = (e) => {
         setFile(e.target.files[0])
     }
-
     const handleAddProduct = async (e) => {
         e.preventDefault();
         if (file) {
@@ -156,7 +155,7 @@ const AddProduct = () => {
 
     return (
         <>
-            <div className="min-h-screen bg-gray-100 p-6">
+            <div className="min-h-screen bg-gray-100">
                 <div className="mx-auto  rounded-2xl bg-white p-6 shadow">
                     <div className="flex justify-between my-4">
                         <h1 className="mb-6 text-2xl font-semibold text-gray-800">

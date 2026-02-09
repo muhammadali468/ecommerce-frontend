@@ -1,45 +1,43 @@
 import axios from "axios";
 import { useEffect } from "react";
 import { useState } from "react";
-import Navbar from "../Components/Navbar";
+import Loader from "../Components/Loader";
 
 const AddCategory = () => {
-    const [formData, setFormData] = useState(new FormData());
     const [file, setFile] = useState(null);
+    const [catName, setCatName] = useState("");
     const [categoriesData, setCategoriesData] = useState([])
+    const [loading, setLoading] = useState(false);
     const handleViewAllCategories = async () => {
         const allCat = await axios.get("https://ecommerce-backend-production-b154.up.railway.app/api/category/viewAll")
         setCategoriesData(allCat.data.cat)
     }
     // handleViewAllCategories()
-
     useEffect(() => {
         handleViewAllCategories()
     }, [])
 
     const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData((prevFormData) => {
-            const newFormData = new FormData();
-            newFormData.append(name, value);
-            return newFormData;
-        })
+        setCatName(e.target.value)
     }
 
     const handleAddCategory = async (e) => {
         e.preventDefault();
-        if (file) {
-            formData.append("cat_img", file)
-            try {
-                const res = await axios.post("https://ecommerce-backend-production-b154.up.railway.app/api/category/add", formData);
-                alert(res.data.msg);
-            } catch (error) {
-                console.log(error)
-            }
-            handleViewAllCategories()
-        } else {
-            alert("Please select a valid file")
+        if (!file) {
+            alert("Please upload a file!")
         }
+        const newFormData = new FormData();
+        newFormData.append("cat_name", catName)
+        newFormData.append("cat_img", file)
+        try {
+            setLoading(true)
+            const res = await axios.post("https://ecommerce-backend-production-b154.up.railway.app/api/category/add", newFormData);
+            alert(res.data.msg);
+            setLoading(false)
+        } catch (error) {
+            console.log(error)
+        }
+        handleViewAllCategories()
 
     }
 
@@ -48,7 +46,9 @@ const AddCategory = () => {
     }
     const handleDeleteCategory = async (id) => {
         try {
+            setLoading(true)
             const res = await axios.delete(`https://ecommerce-backend-production-b154.up.railway.app/api/category/delete/${id}`);
+            setLoading(false)
             alert(res.data.msg)
             handleViewAllCategories()
         } catch (error) {
@@ -58,8 +58,8 @@ const AddCategory = () => {
     }
     return (
         <>
-            <Navbar />
-            <div className="py-20 flex min-h-screen bg-gray-100 px-6 gap-6">
+            {loading ? <Loader/> : ""}
+            <div className="flex min-h-screen bg-gray-100 px-6 gap-6">
                 {/* Left: Add Category Form */}
                 <div className="w-1/3 bg-white p-6 rounded-lg shadow-md">
                     <h2 className="text-2xl mb-4">Add Category</h2>
@@ -110,7 +110,7 @@ const AddCategory = () => {
                             {categoriesData.map((cat) => (
                                 <tr key={cat._id} className="hover:bg-gray-100">
                                     <td className="p-3 border-b">
-                                        <img src={`https://ecommerce-backend-production-b154.up.railway.app/categories/${cat.cat_img}`} alt={cat.cat_name} className="w-16 h-16 object-cover p-3 rounded border border-black" />
+                                        <img src={cat.cat_img} alt={cat.cat_name} className="w-16 h-16 object-cover p-3 rounded border border-black" />
                                     </td>
                                     <td className="p-3 border-b">{cat.cat_name}</td>
                                     <td className="p-3 border-b">
