@@ -1,13 +1,14 @@
 import axios from "axios";
 import { useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
- 
+
 const UserLogin = () => {
     const [user, setUser] = useState({
         email: "",
         password: ""
     })
     const navigate = useNavigate()
+    const BASE_URL = window.location.hostname === "localhost" ? import.meta.env.VITE_APP_LOCAL_BASE_URL : import.meta.env.VITE_APP_DEV_BASE_URL
     const handleChange = (e) => {
         const { name, value } = e.target;
         setUser({
@@ -18,7 +19,7 @@ const UserLogin = () => {
     const handleLogin = async (e) => {
         e.preventDefault()
         try {
-            const res = await axios.post("https://ecommerce-backend-production-b154.up.railway.app/api/user/login", user)
+            const res = await axios.post(`${BASE_URL}/api/user/login`, user)
             alert(res.data.msg)
             console.log(res.data)
             if (res.data.sts === 0) {

@@ -5,8 +5,9 @@ import ProductCard from "../Components/ProductCard";
 
 const Shop = () => {
     const [products, setProducts] = useState([])
+    const BASE_URL = window.location.hostname === "localhost" ? import.meta.env.VITE_APP_LOCAL_BASE_URL : import.meta.env.VITE_APP_DEV_BASE_URL
     const handleFetchProducts = async () => {
-        const res = await axios.get("https://ecommerce-backend-production-b154.up.railway.app/api/products/get");
+        const res = await axios.get(`${BASE_URL}/api/products/get`);
         if (res) {
             console.log(res.data.product)
             setProducts(res.data.product);
@@ -68,16 +69,16 @@ const Shop = () => {
                         </div>
                     </div>
                     <div className="mb-4 grid gap-4 sm:grid-cols-2 md:mb-8 lg:grid-cols-3 xl:grid-cols-4">
-                        {products.filter((product)=> product.productStatus === "enable").map((product) => (
+                        {products.filter((product) => product.productStatus === "enable").map((product) => (
                             <ProductCard
                                 key={product._id}
-                                image={"https://ecommerce-backend-production-b154.up.railway.app/products/" + product.productThumbnailImg}
+                                image={product.productThumbnailImg}
                                 name={product.productName}
                                 price={product.productPrice}
                                 salePrice={product.productSalePrice}
                             />
                         ))}
-                        
+
                     </div>
                     <div className="w-full text-center">
                         <button type="button" className="rounded-lg border border-gray-200 bg-white px-5 py-2.5 text-sm  text-gray-900 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700">Show more</button>

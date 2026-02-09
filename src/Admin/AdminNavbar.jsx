@@ -5,9 +5,10 @@ import { useNavigate } from "react-router-dom"
 const AdminNavbar = () => {
     const navigate = useNavigate();
     const token = localStorage.getItem("admin_token");
+    const BASE_URL = window.location.hostname === "localhost" ? import.meta.VITE_APP_LOCAL_BASE_URL : import.meta.VITE_APP_DEV_BASE_URL
     const handleLogout = async () => {
         try {
-            const res = await axios.post("https://ecommerce-backend-production-b154.up.railway.app/api/admin/logout", { token })
+            const res = await axios.post(`${BASE_URL}/api/admin/logout`, { token })
             alert(res.data.msg)
             if (res.data.sts === 0) {
                 localStorage.removeItem("admin_id");
@@ -46,7 +47,7 @@ const AdminNavbar = () => {
                             /> */}
                             <h2>Logo</h2>
                         </div>
-                        
+
                     </div>
                     <div className=" inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
                         <button
@@ -62,7 +63,7 @@ const AdminNavbar = () => {
                 </div>
             </div>
 
-            
+
         </Disclosure>
     )
 }

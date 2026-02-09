@@ -2,6 +2,7 @@ import { useState } from "react";
 import AddCategory from "./AddCategory";
 import { Tab, TabList, TabPanel, Tabs } from "react-tabs";
 import AddProduct from "./AddProduct";
+import { Link } from "react-router-dom";
 const Dashboard = () => {
     const [categories, setCategories] = useState([]);
     const [products, setProducts] = useState([]);
@@ -45,7 +46,9 @@ const Dashboard = () => {
     return (
         <div className="min-h-screen bg-gray-100 p-6">
             <div className="flex items-center mb-6">
-                <h1 className="text-3xl">Logo</h1>
+                <Link to="/">
+                    <h1 className="cursor-pointer text-3xl">Logo</h1>
+                </Link>
             </div>
             <Tabs className="grid md:grid-cols-5 gap-4">
                 <TabList className="shadow bg-white col-span-1 rounded-2xl p-4">

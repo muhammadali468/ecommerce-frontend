@@ -6,8 +6,9 @@ import axios from "axios"
 const Categories = () => {
 
     const [categoriesData, setCategoriesData] = useState([])
+    const BASE_URL = window.location.hostname === "localhost" ? import.meta.env.VITE_APP_LOCAL_BASE_URL : import.meta.env.VITE_APP_DEV_BASE_URL
     const handleViewAllCategories = async () => {
-        const allCat = await axios.get("https://ecommerce-backend-production-b154.up.railway.app/api/category/viewAll")
+        const allCat = await axios.get(`${BASE_URL}/api/category/viewAll`)
         setCategoriesData(allCat.data.cat)
     }
     useEffect(() => {

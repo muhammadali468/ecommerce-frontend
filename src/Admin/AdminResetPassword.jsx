@@ -19,7 +19,7 @@ const AdminResetPassword = () => {
     const handleResetPassword = async (e) => {
         e.preventDefault();
         try {
-            const res = await axios.post("https://ecommerce-backend-production-b154.up.railway.app/api/admin/reset-password", password);
+            const res = await axios.post(`${BASE_URL}/api/admin/reset-password`, password);
             if (res.data.sts !== 0) {
                 alert("Error changing Password!")
             }

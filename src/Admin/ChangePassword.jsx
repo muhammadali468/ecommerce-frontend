@@ -10,6 +10,7 @@ const ChangePassword = () => {
     })
     const admin_name = localStorage.getItem("admin_name");
     const admin_token = localStorage.getItem("admin_token");
+    const BASE_URL = window.location.hostname === "localhost" ? import.meta.env.VITE_APP_LOCAL_BASE_URL : import.meta.env.VITE_APP_DEV_BASE_URL 
 
     const navigate = useNavigate()
     useEffect(() => {
@@ -30,7 +31,7 @@ const ChangePassword = () => {
     const handleChangePassword = async (e) => {
         e.preventDefault()
         try{
-            const res = await axios.put("https://ecommerce-backend-production-b154.up.railway.app/api/admin/change-password", passwords);
+            const res = await axios.put(`${BASE_URL}/api/admin/change-password`, passwords);
             console.log(res)
             alert(res.data.msg)
         }

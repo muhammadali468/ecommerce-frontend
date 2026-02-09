@@ -8,8 +8,9 @@ const AddCategory = () => {
     const [catName, setCatName] = useState("");
     const [categoriesData, setCategoriesData] = useState([])
     const [loading, setLoading] = useState(false);
+    const BASE_URL = window.location.hostname === "localhost" ? import.meta.env.VITE_APP_LOCAL_BASE_URL : import.meta.env.VITE_APP_DEV_BASE_URL 
     const handleViewAllCategories = async () => {
-        const allCat = await axios.get("https://ecommerce-backend-production-b154.up.railway.app/api/category/viewAll")
+        const allCat = await axios.get(`${BASE_URL}/api/category/viewAll`)
         setCategoriesData(allCat.data.cat)
     }
     // handleViewAllCategories()
@@ -31,7 +32,7 @@ const AddCategory = () => {
         newFormData.append("cat_img", file)
         try {
             setLoading(true)
-            const res = await axios.post("https://ecommerce-backend-production-b154.up.railway.app/api/category/add", newFormData);
+            const res = await axios.post(`${BASE_URL}/api/category/add`, newFormData);
             alert(res.data.msg);
             setLoading(false)
         } catch (error) {
@@ -47,12 +48,14 @@ const AddCategory = () => {
     const handleDeleteCategory = async (id) => {
         try {
             setLoading(true)
-            const res = await axios.delete(`https://ecommerce-backend-production-b154.up.railway.app/api/category/delete/${id}`);
+            const res = await axios.delete(`${BASE_URL}/api/category/delete/${id}`);
             setLoading(false)
             alert(res.data.msg)
             handleViewAllCategories()
         } catch (error) {
+            alert("Failed!")
             console.log(error)
+            setLoading(false)
         }
 
     }

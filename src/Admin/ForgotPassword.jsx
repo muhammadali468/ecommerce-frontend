@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 const AdminForgotPassword = () => {
 
     const [adminEmail, setAdminEmail] = useState(localStorage.getItem("tem_email") ? localStorage.getItem("tem_email") : "");
+    const BASE_URL = window.location.hostname === "localhost" ? import.meta.VITE_APP_LOCAL_BASE_URL : import.meta.VITE_APP_DEV_BASE_URL 
 
     const handleChange = (e) => {
         const email = e.target.value;
@@ -13,7 +14,7 @@ const AdminForgotPassword = () => {
     const handleForgotPassword = async (e) => {
         e.preventDefault();
         try {
-            const res = await axios.post("https://ecommerce-backend-production-b154.up.railway.app/api/admin/reset-password-link", { adminEmail })
+            const res = await axios.post(`${BASE_URL}/api/admin/reset-password-link`, { adminEmail })
             console.log("res", res)
         } catch (error) {
             console.log("error", error)
