@@ -59,7 +59,7 @@ const AddCategory = () => {
     return (
         <>
             <Navbar />
-            <div className="flex min-h-screen bg-gray-100 p-6 gap-6">
+            <div className="py-20 flex min-h-screen bg-gray-100 px-6 gap-6">
                 {/* Left: Add Category Form */}
                 <div className="w-1/3 bg-white p-6 rounded-lg shadow-md">
                     <h2 className="text-2xl mb-4">Add Category</h2>
