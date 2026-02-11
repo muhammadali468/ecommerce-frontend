@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
 
 const UserLogin = () => {
@@ -16,14 +16,24 @@ const UserLogin = () => {
             [name]: value
         })
     }
+    useEffect(()=>{
+        const user_token = localStorage.getItem("user_token")
+        if(user_token){
+            alert("Already Logged in!")
+            navigate("/shop")
+        }
+    },[])
+
     const handleLogin = async (e) => {
         e.preventDefault()
         try {
             const res = await axios.post(`${BASE_URL}/api/user/login`, user)
             alert(res.data.msg)
-            console.log(res.data)
             if (res.data.sts === 0) {
-                navigate("/shop")
+                localStorage.setItem("user_email", res.data.email);
+                localStorage.setItem("user_name", res.data.name);
+                localStorage.setItem("user_token", res.data.token);
+                navigate(-1);
             }
 
         } catch (error) {
@@ -48,7 +58,7 @@ const UserLogin = () => {
                             type="email"
                             required
                             autoComplete="email"
-                            className="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6"
+                            className="block border w-full rounded-md bg-white/5 px-3 py-1.5 text-base outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6"
                         />
                     </div>
                 </div>
@@ -73,7 +83,7 @@ const UserLogin = () => {
                             type="password"
                             required
                             autoComplete="current-password"
-                            className="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6"
+                            className="block border w-full rounded-md bg-white/5 px-3 py-1.5 text-base outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6"
                         />
                     </div>
                 </div>
@@ -87,10 +97,10 @@ const UserLogin = () => {
                         Login
                     </button>
                 </div>
-                <span>
-                    Not user?
-                    <Link to="/admin/login" className="mx-1 text-blue-700">Login</Link>
-                    for Admin
+                <span className="w-full text-center">
+                    Don't have an account 
+                    <Link to="/user/register" className="mx-1 text-blue-700">Register</Link>
+                    
                 </span>
 
             </form>

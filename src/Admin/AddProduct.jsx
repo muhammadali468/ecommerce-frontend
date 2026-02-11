@@ -96,13 +96,17 @@ const AddProduct = () => {
 
     const handleDeleteProduct = async (id) => {
         try {
+            setLoading(true)
             const res = await axios.delete(`${BASE_URL}/api/product/delete/${id}`)
+            setLoading(false)
             alert(res.data.msg)
             if (res.data.sts === 0) {
                 handleViewAllProducts()
             }
         } catch (error) {
-
+            alert("Failed to delete product!")
+            console.log(error);
+            setLoading(false)
         }
     }
 
@@ -120,10 +124,12 @@ const AddProduct = () => {
 
     const handleChangeStatus = async (status) => {
         try {
+            setLoading(true)
             const res = await axios.post(`${BASE_URL}/api/product/update`, {
                 productIds: selectedRows,
                 productStatuses: status
             })
+            setLoading(false)
             alert(res.data.msg)
             if (res) {
                 handleViewAllProducts()
@@ -164,6 +170,9 @@ const AddProduct = () => {
         setFiles(e.target.files)
     }
     const handleUploadImages = async () => {
+        if(files.length === 0){
+            alert("File is required!")
+        }
         const formData = new FormData();
         for (const file of files) {
             formData.append("images", file)
@@ -171,13 +180,11 @@ const AddProduct = () => {
         formData.append("productId", productSelected)
         try {
             setLoading(true)
-
             const res = await axios.post(`${BASE_URL}/api/product/uploadimages/${productSelected}`, formData, {
                 headers: { "Content-Type": "multipart/form-data" }
             })
             if (res) {
                 setLoading(false)
-
                 alert(res.data.msg)
                 setIsModalOpen(false)
                 setFiles([])
@@ -407,7 +414,7 @@ const AddProduct = () => {
                 </div>
             </div>
             {isModalOpen === true ?
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+                <div className="fixed bg-glassy inset-0 z-50 flex items-center justify-center bg-black/50">
                     <div className="w-full max-w-md rounded-xl bg-white p-6 shadow-lg">
 
                         {/* Header */}
@@ -421,7 +428,7 @@ const AddProduct = () => {
                         </div>
 
                         {/* Body */}
-                        <input onChange={(e) => handleFilesChange(e)} className="border rounded-lg px-4 py-2 my-2 w-full" type="file" multiple name="productImages" id="" />
+                        <input onChange={(e) => handleFilesChange(e)} className="cursor-pointer border rounded-lg px-4 py-2 my-2 w-full" type="file" multiple name="productImages" id="" />
 
                         {/* Footer */}
                         <div className="flex justify-end gap-2">
@@ -430,7 +437,7 @@ const AddProduct = () => {
                                 className="cursor-pointer rounded-lg border px-4 py-2 hover:bg-gray-100">
                                 Cancel
                             </button>
-                            <button onClick={handleUploadImages} className="cursor-pointer rounded-lg bg-indigo-600 px-4 py-2 text-white hover:bg-indigo-700">
+                            <button disabled={files.length === 0} onClick={handleUploadImages} className="enabled:cursor-pointer disabled:bg-gray-400 rounded-lg bg-indigo-600 px-4 py-2 text-white hover:bg-indigo-700">
                                 Confirm
                             </button>
                         </div>

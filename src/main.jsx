@@ -16,6 +16,8 @@ import UserLogin from './User/UserLogin.jsx'
 import UserRegistration from './User/UserRegistration.jsx'
 import Shop from './Pages/Shop.jsx'
 import Categories from './Pages/Categories.jsx'
+import Cart from './Pages/Cart.jsx'
+import CheckOut from './Pages/Checkout.jsx'
 
 
 const router = createBrowserRouter([
@@ -45,8 +47,10 @@ const router = createBrowserRouter([
         ]
       },
       { path: "shop", element: <Shop /> },
-      { path: "categories", element: <Categories /> }
-
+      { path: "categories", element: <Categories /> },
+      { path: "cart", element: <Cart /> },
+      { path: "checkout", element: <CheckOut/> },
+    
     ],
 
   }

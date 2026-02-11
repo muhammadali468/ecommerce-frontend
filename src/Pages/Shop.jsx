@@ -2,23 +2,32 @@ import { useState, useEffect } from "react";
 import Navbar from "../Components/Navbar"
 import axios from "axios";
 import ProductCard from "../Components/ProductCard";
+import Loader from "../Components/Loader";
 
 const Shop = () => {
     const [products, setProducts] = useState([])
+    const [loading, setLoading] = useState(false)
     const BASE_URL = window.location.hostname === "localhost" ? import.meta.env.VITE_APP_LOCAL_BASE_URL : import.meta.env.VITE_APP_DEV_BASE_URL
+    console.log(BASE_URL)
     const handleFetchProducts = async () => {
-        const res = await axios.get(`${BASE_URL}/api/products/get`);
-        if (res) {
-            console.log(res.data.product)
+        try {
+            setLoading(true)
+            const res = await axios.get(`${BASE_URL}/api/products/get`);
             setProducts(res.data.product);
+            setLoading(false)
+            
+        } catch (error) {
+            console.log(error)
+            alert("Failed to fetch products!")
+            setLoading(false)
         }
     }
     useEffect(() => {
         handleFetchProducts()
-        console.log(products)
     }, [])
     return (
         <div>
+            {loading ? <Loader/> : ""}
             <Navbar />
             <section className="bg-gray-50 py-8 antialiased md:py-20">
                 <div className="mx-auto max-w-7xl px-4 2xl:px-0">
@@ -72,6 +81,7 @@ const Shop = () => {
                         {products.filter((product) => product.productStatus === "enable").map((product) => (
                             <ProductCard
                                 key={product._id}
+                                id={product._id}
                                 image={product.productThumbnailImg}
                                 name={product.productName}
                                 price={product.productPrice}
@@ -81,7 +91,7 @@ const Shop = () => {
 
                     </div>
                     <div className="w-full text-center">
-                        <button type="button" className="rounded-lg border border-gray-200 bg-white px-5 py-2.5 text-sm  text-gray-900 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700">Show more</button>
+                        <button type="button" className="rounded-lg border border-gray-200 bg-white px-5 py-2.5 text-sm  text-gray-900 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:outline-none focus:ring-4 cursor-pointer focus:ring-gray-100 dark:focus:ring-gray-700">Show more</button>
                     </div>
                 </div>
                 {/* <!-- Filter modal --> */}

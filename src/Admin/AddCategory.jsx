@@ -10,8 +10,16 @@ const AddCategory = () => {
     const [loading, setLoading] = useState(false);
     const BASE_URL = window.location.hostname === "localhost" ? import.meta.env.VITE_APP_LOCAL_BASE_URL : import.meta.env.VITE_APP_DEV_BASE_URL 
     const handleViewAllCategories = async () => {
-        const allCat = await axios.get(`${BASE_URL}/api/category/viewAll`)
-        setCategoriesData(allCat.data.cat)
+        try {
+            setLoading(true)
+            const allCat = await axios.get(`${BASE_URL}/api/category/viewAll`)
+            setCategoriesData(allCat.data.cat)
+            setLoading(false)
+        } catch (error) {
+            alert("Failed to load categories!")
+            console.log(error)
+            setLoading(false)
+        }
     }
     // handleViewAllCategories()
     useEffect(() => {
@@ -37,6 +45,8 @@ const AddCategory = () => {
             setLoading(false)
         } catch (error) {
             console.log(error)
+            alert("Failed to add a product!")
+            setLoading(false)
         }
         handleViewAllCategories()
 
@@ -53,7 +63,7 @@ const AddCategory = () => {
             alert(res.data.msg)
             handleViewAllCategories()
         } catch (error) {
-            alert("Failed!")
+            alert("Failed to delete the product!")
             console.log(error)
             setLoading(false)
         }
@@ -128,7 +138,7 @@ const AddCategory = () => {
                             {categoriesData.length === 0 && (
                                 <tr>
                                     <td colSpan="2" className="p-3 text-center text-gray-500">
-                                        No categories added yet.
+                                        No categories available.
                                     </td>
                                 </tr>
                             )}
