@@ -12,7 +12,7 @@ const Shop = () => {
     const handleFetchProducts = async () => {
         try {
             setLoading(true)
-            const res = await axios.get(`${BASE_URL}/api/products/get`);
+            const res = await axios.get(`${BASE_URL}/api/public/products/get`);
             setProducts(res.data.product);
             setLoading(false)
             

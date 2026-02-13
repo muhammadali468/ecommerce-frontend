@@ -8,11 +8,12 @@ const AddCategory = () => {
     const [catName, setCatName] = useState("");
     const [categoriesData, setCategoriesData] = useState([])
     const [loading, setLoading] = useState(false);
-    const BASE_URL = window.location.hostname === "localhost" ? import.meta.env.VITE_APP_LOCAL_BASE_URL : import.meta.env.VITE_APP_DEV_BASE_URL 
+    const adminToken = localStorage.getItem("admin_token")
+    const BASE_URL = window.location.hostname === "localhost" ? import.meta.env.VITE_APP_LOCAL_BASE_URL : import.meta.env.VITE_APP_DEV_BASE_URL
     const handleViewAllCategories = async () => {
         try {
             setLoading(true)
-            const allCat = await axios.get(`${BASE_URL}/api/category/viewAll`)
+            const allCat = await axios.get(`${BASE_URL}/api/public/category/viewAll`)
             setCategoriesData(allCat.data.cat)
             setLoading(false)
         } catch (error) {
@@ -40,7 +41,11 @@ const AddCategory = () => {
         newFormData.append("cat_img", file)
         try {
             setLoading(true)
-            const res = await axios.post(`${BASE_URL}/api/category/add`, newFormData);
+            const res = await axios.post(`${BASE_URL}/api/admin/category/add`, newFormData, {
+                headers: {
+                    "x-admin-token": `Bearer ${adminToken}`
+                }
+            });
             alert(res.data.msg);
             setLoading(false)
         } catch (error) {
@@ -58,7 +63,14 @@ const AddCategory = () => {
     const handleDeleteCategory = async (id) => {
         try {
             setLoading(true)
-            const res = await axios.delete(`${BASE_URL}/api/category/delete/${id}`);
+            console.log("adminToken", adminToken)
+            const res = await axios.delete(`${BASE_URL}/api/admin/category/delete/${id}`,
+                {
+                    headers: {
+                        "x-admin-token": `Bearer ${adminToken}`
+                    }
+                }
+            );
             setLoading(false)
             alert(res.data.msg)
             handleViewAllCategories()
@@ -71,7 +83,7 @@ const AddCategory = () => {
     }
     return (
         <>
-            {loading ? <Loader/> : ""}
+            {loading ? <Loader /> : ""}
             <div className="flex min-h-screen bg-gray-100 px-6 gap-6">
                 {/* Left: Add Category Form */}
                 <div className="w-1/3 bg-white p-6 rounded-lg shadow-md">

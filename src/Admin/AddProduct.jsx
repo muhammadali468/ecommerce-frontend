@@ -26,12 +26,12 @@ const AddProduct = () => {
     const [productSelected, setProductSelected] = useState(null);
     const [files, setFiles] = useState([])
     const BASE_URL = window.location.hostname === "localhost" ? import.meta.env.VITE_APP_LOCAL_BASE_URL : import.meta.env.VITE_APP_DEV_BASE_URL
-
+    const adminToken = localStorage.getItem("admin_token");
     const [loading, setLoading] = useState(false);
     const handleViewAllCategories = async () => {
         try {
             setLoading(true)
-            const allCat = await axios.get(`${BASE_URL}/api/category/viewAll`)
+            const allCat = await axios.get(`${BASE_URL}/api/public/category/viewAll`)
             setLoading(false)
             setCategoriesData(allCat.data.cat)
 
@@ -43,7 +43,7 @@ const AddProduct = () => {
     const handleViewAllProducts = async () => {
         try {
             setLoading(true)
-            const allProductsRes = await axios.get(`${BASE_URL}/api/products/get`);
+            const allProductsRes = await axios.get(`${BASE_URL}/api/public/products/get`);
             setLoading(false)
             setProducts(allProductsRes.data.product)
         } catch (error) {
@@ -78,7 +78,13 @@ const AddProduct = () => {
             try {
                 setLoading(true)
 
-                const res = await axios.post(`${BASE_URL}/api/product/add`, fd);
+                const res = await axios.post(`${BASE_URL}/api/admin/product/add`, fd,
+                    {
+                        headers: {
+                            "x-admin-token": `Bearer ${adminToken}`
+                        }
+                    }
+                );
                 setLoading(false)
 
                 alert(res.data.msg)
@@ -97,7 +103,13 @@ const AddProduct = () => {
     const handleDeleteProduct = async (id) => {
         try {
             setLoading(true)
-            const res = await axios.delete(`${BASE_URL}/api/product/delete/${id}`)
+            const res = await axios.delete(`${BASE_URL}/api/admin/product/delete/${id}`,
+                {
+                    headers: {
+                        "x-admin-token": `Bearer ${adminToken}`
+                    }
+                }
+            )
             setLoading(false)
             alert(res.data.msg)
             if (res.data.sts === 0) {
@@ -125,10 +137,16 @@ const AddProduct = () => {
     const handleChangeStatus = async (status) => {
         try {
             setLoading(true)
-            const res = await axios.post(`${BASE_URL}/api/product/update`, {
+            const res = await axios.post(`${BASE_URL}/api/admin/product/update`, {
                 productIds: selectedRows,
                 productStatuses: status
-            })
+            },
+                {
+                    headers: {
+                        "x-admin-token": `Bearer ${adminToken}`
+                    }
+                }
+            )
             setLoading(false)
             alert(res.data.msg)
             if (res) {
@@ -143,9 +161,15 @@ const AddProduct = () => {
         try {
             setLoading(true)
 
-            const res = await axios.post(`${BASE_URL}/api/product/delete/multiple`, {
+            const res = await axios.post(`${BASE_URL}/api/admin/product/delete/multiple`, {
                 productIds: selectedRows,
-            })
+            },
+                {
+                    headers: {
+                        "x-admin-token": `Bearer ${adminToken}`
+                    }
+                }
+            )
             setLoading(false)
 
             alert(res.data.msg)
@@ -170,7 +194,7 @@ const AddProduct = () => {
         setFiles(e.target.files)
     }
     const handleUploadImages = async () => {
-        if(files.length === 0){
+        if (files.length === 0) {
             alert("File is required!")
         }
         const formData = new FormData();
@@ -180,8 +204,8 @@ const AddProduct = () => {
         formData.append("productId", productSelected)
         try {
             setLoading(true)
-            const res = await axios.post(`${BASE_URL}/api/product/uploadimages/${productSelected}`, formData, {
-                headers: { "Content-Type": "multipart/form-data" }
+            const res = await axios.post(`${BASE_URL}/api/admin/product/uploadimages/${productSelected}`, formData, {
+                headers: { "Content-Type": "multipart/form-data", "x-admin-token": adminToken }
             })
             if (res) {
                 setLoading(false)

@@ -17,6 +17,7 @@ function App() {
     const handleValidateToken = async () => {
       try {
         const res = await axios.post(VITE_APP_ADMIN_TOKEN_AUTH, { token });
+        console.log(res)
         if (res.data.sts === 1) {
           localStorage.removeItem("admin_id");
           localStorage.removeItem("admin_email");

@@ -14,7 +14,6 @@ const AdminHome = () => {
     if (!admin_token) {
       navigate("/admin/login")
     }
-    
   })
 
   return (

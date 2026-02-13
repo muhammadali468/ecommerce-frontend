@@ -20,7 +20,7 @@ const UserRegistration = () => {
     const handleRegisterUser = async (e) => {
         e.preventDefault();
         try {
-            const res = await axios.post(`${BASE_URL}/api/user/register`, user);
+            const res = await axios.post(`${BASE_URL}/api/public/register`, user);
             alert(res.data.msg)
             if (res.data.sts === 0) {
                 navigate("/user/login")

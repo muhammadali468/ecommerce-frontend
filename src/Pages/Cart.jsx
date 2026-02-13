@@ -6,7 +6,7 @@ import Loader from "../Components/Loader";
 
 const Cart = () => {
     const [cartItems, setCartItems] = useState(JSON.parse(localStorage.getItem("cart") || "[]"));
-    const [productIds, setProductIds] = useState(cartItems.map(({ _id }) => ({ _id })))
+    const [productIds, setProductIds] = useState(cartItems.map(item => item._id))
     const [priceValidatedProducts, setPriceValidatedProducts] = useState([])
     const [loading, setLoading] = useState(false);
     const BASE_URL = window.location.hostname === "localhost" ? import.meta.env.VITE_APP_LOCAL_BASE_URL : import.meta.env.VITE_APP_DEV_BASE_URL
@@ -25,7 +25,7 @@ const Cart = () => {
     useEffect(() => {
         const handleFetchPrice = async () => {
             setLoading(true)
-            const fetchPrice = await axios.post(`${BASE_URL}/api/calculateProductPrice`, { productIds });
+            const fetchPrice = await axios.post(`${BASE_URL}/api/public/calculateProductPrice`, { productIds });
             const fetchedPrices = fetchPrice.data.products
             setPriceValidatedProducts(fetchedPrices);
             setLoading(false)
@@ -38,65 +38,69 @@ const Cart = () => {
     console.log(priceValidatedProducts)
     return (
         <>
-            {loading ? <Loader/> : ""}
+            {loading ? <Loader /> : ""}
             <Navbar />
             <section className="bg-white py-8 antialiased md:py-20">
-                <div className="mx-auto max-w-7xl px-4 2xl:px-0">
-                    <h2 className="text-xl font-semibold text-gray-900  sm:text-2xl">Shopping Cart</h2>
-                    <div className="mt-6 sm:mt-8 md:gap-6 lg:flex lg:items-start xl:gap-8">
-                        <div className="mx-auto w-full flex-none lg:max-w-2xl xl:max-w-4xl">
-                            <div className="space-y-6">
-                                {cartItems.map((product) => (
-                                    <div key={product._id} className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm md:p-6">
-                                        <div className="space-y-4 md:flex md:items-center md:justify-between md:gap-6 md:space-y-0">
-                                            <a href="#" className="shrink-0 md:order-1">
-                                                <img className="h-20 w-20" src={product.image} alt="imac image" />
-                                            </a>
-                                            <label for="counter-input" className="sr-only">Choose quantity:</label>
-                                            <div className="flex items-center justify-between md:order-3 md:justify-end">
-                                                <div className="flex items-center">
-                                                    <button onClick={() => handleReduceQuantity(product._id)} type="button" id="decrement-button" data-input-counter-decrement="counter-input" className="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-md border border-gray-300 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-100">
-                                                        <svg className="h-2.5 w-2.5 text-gray-900 " aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 2">
-                                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1h16" />
-                                                        </svg>
-                                                    </button>
-                                                    <p className="mx-2">{product.quantity}</p>
-                                                    {/* <input type="text" id="counter-input" data-input-counter className="w-10 shrink-0 border-0 bg-transparent text-center text-sm font-medium text-gray-900 focus:outline-none focus:ring-0" placeholder="" value="2" required /> */}
-                                                    <button onClick={() => handleIncreaseQuantity(product._id)} type="button" id="increment-button" data-input-counter-increment="counter-input" className="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-md border border-gray-300 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-100">
-                                                        <svg className="h-2.5 w-2.5 text-gray-900 " aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
-                                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 1v16M1 9h16" />
-                                                        </svg>
-                                                    </button>
-                                                </div>
-                                                <div className="text-end md:order-4 md:w-32">
-                                                    <p className="text-base font-bold text-gray-900 ">{(priceValidatedProducts.find(fetchedProduct => fetchedProduct._id === product._id)?.price || 0) * product.quantity} PKR</p>
+                {cartItems.length > 0 ?
+                    <div className="mx-auto max-w-7xl px-4 2xl:px-0">
+                        <h2 className="text-xl font-semibold text-gray-900  sm:text-2xl">Shopping Cart</h2>
+                        <div className="mt-6 sm:mt-8 md:gap-6 lg:flex lg:items-start xl:gap-8">
+                            <div className="mx-auto w-full flex-none lg:max-w-2xl xl:max-w-4xl">
+                                <div className="space-y-6">
+                                    {
+                                        cartItems.map((product) => (
+                                            <div key={product._id} className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm md:p-6">
+                                                <div className="space-y-4 md:flex md:items-center md:justify-between md:gap-6 md:space-y-0">
+                                                    <a href="#" className="shrink-0 md:order-1">
+                                                        <img className="h-20 w-20" src={product.image} alt="imac image" />
+                                                    </a>
+                                                    <label for="counter-input" className="sr-only">Choose quantity:</label>
+                                                    <div className="flex items-center justify-between md:order-3 md:justify-end">
+                                                        <div className="flex items-center">
+                                                            <button onClick={() => handleReduceQuantity(product._id)} type="button" id="decrement-button" data-input-counter-decrement="counter-input" className="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-md border border-gray-300 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-100">
+                                                                <svg className="h-2.5 w-2.5 text-gray-900 " aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 2">
+                                                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1h16" />
+                                                                </svg>
+                                                            </button>
+                                                            <p className="mx-2">{product.quantity}</p>
+                                                            {/* <input type="text" id="counter-input" data-input-counter className="w-10 shrink-0 border-0 bg-transparent text-center text-sm font-medium text-gray-900 focus:outline-none focus:ring-0" placeholder="" value="2" required /> */}
+                                                            <button onClick={() => handleIncreaseQuantity(product._id)} type="button" id="increment-button" data-input-counter-increment="counter-input" className="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-md border border-gray-300 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-100">
+                                                                <svg className="h-2.5 w-2.5 text-gray-900 " aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
+                                                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 1v16M1 9h16" />
+                                                                </svg>
+                                                            </button>
+                                                        </div>
+                                                        <div className="text-end md:order-4 md:w-32">
+                                                            <p className="text-base font-bold text-gray-900 ">{(priceValidatedProducts.find(fetchedProduct => fetchedProduct._id === product._id)?.price || 0) * product.quantity} PKR</p>
+                                                        </div>
+                                                    </div>
+
+                                                    <div className="w-full min-w-0 flex-1 space-y-4 md:order-2 md:max-w-md">
+                                                        <p className="text-base font-medium text-gray-900 hover:underline ">{product.name}</p>
+
+                                                        <div className="flex items-center gap-4 mt-4">
+                                                            <button type="button" className="inline-flex items-center text-sm font-medium text-gray-500 hover:text-gray-900 hover:underline dark:text-gray-400 dark:hover:text-white">
+                                                                <svg className="me-1.5 h-5 w-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12.01 6.001C6.5 1 1 8 5.782 13.001L12.011 20l6.23-7C23 8 17.5 1 12.01 6.002Z" />
+                                                                </svg>
+                                                                Add to Favorites
+                                                            </button>
+
+                                                            <button type="button" className="inline-flex items-center text-sm font-medium text-red-600 hover:underline dark:text-red-500">
+                                                                <svg className="me-1.5 h-5 w-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18 17.94 6M18 18 6.06 6" />
+                                                                </svg>
+                                                                Remove
+                                                            </button>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
+                                        ))
 
-                                            <div className="w-full min-w-0 flex-1 space-y-4 md:order-2 md:max-w-md">
-                                                <p className="text-base font-medium text-gray-900 hover:underline ">{product.name}</p>
-
-                                                <div className="flex items-center gap-4 mt-4">
-                                                    <button type="button" className="inline-flex items-center text-sm font-medium text-gray-500 hover:text-gray-900 hover:underline dark:text-gray-400 dark:hover:text-white">
-                                                        <svg className="me-1.5 h-5 w-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12.01 6.001C6.5 1 1 8 5.782 13.001L12.011 20l6.23-7C23 8 17.5 1 12.01 6.002Z" />
-                                                        </svg>
-                                                        Add to Favorites
-                                                    </button>
-
-                                                    <button type="button" className="inline-flex items-center text-sm font-medium text-red-600 hover:underline dark:text-red-500">
-                                                        <svg className="me-1.5 h-5 w-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18 17.94 6M18 18 6.06 6" />
-                                                        </svg>
-                                                        Remove
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                            {/* <div className="hidden xl:mt-8 xl:block">
+                                    }
+                                </div>
+                                {/* <div className="hidden xl:mt-8 xl:block">
                             <h3 className="text-2xl font-semibold text-gray-900 ">People also bought</h3>
                             <div className="mt-6 grid grid-cols-3 gap-4 sm:mt-8">
                                 <div className="space-y-6 overflow-hidden rounded-lg border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800">
@@ -201,44 +205,44 @@ const Cart = () => {
                                 </div>
                             </div>
                         </div> */}
-                        </div>
+                            </div>
 
-                        <div className="mx-auto mt-6 max-w-4xl flex-1 space-y-6 lg:mt-0 lg:w-full">
-                            <div className="space-y-4 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
-                                <p className="text-xl font-semibold text-gray-900 ">Order summary</p>
-                                <div className="space-y-4">
-                                    <div className="space-y-2">
-                                        <dl className="flex items-center justify-between gap-4">
-                                            <dt className="text-base font-normal text-gray-500 dark:text-gray-400">Total</dt>
-                                            <dd className="text-base font-medium text-gray-900 ">{priceValidatedProducts.length > 0 ? (priceValidatedProducts).reduce((sum,item)=> sum + item.price * (cartItems.find((product)=>product._id === item._id)?.quantity), 0) : ""} PKR</dd>
-                                        </dl>
+                            <div className="mx-auto mt-6 max-w-4xl flex-1 space-y-6 lg:mt-0 lg:w-full">
+                                <div className="space-y-4 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+                                    <p className="text-xl font-semibold text-gray-900 ">Order summary</p>
+                                    <div className="space-y-4">
+                                        <div className="space-y-2">
+                                            <dl className="flex items-center justify-between gap-4">
+                                                <dt className="text-base font-normal text-gray-500 dark:text-gray-400">Total</dt>
+                                                <dd className="text-base font-medium text-gray-900 ">{priceValidatedProducts.length > 0 ? (priceValidatedProducts).reduce((sum, item) => sum + item.price * (cartItems.find((product) => product._id === item._id)?.quantity), 0) : ""} PKR</dd>
+                                            </dl>
 
-                                        <dl className="flex items-center justify-between gap-4">
-                                            <dt className="text-base font-normal text-gray-500 dark:text-gray-400">General Sales Tax</dt>
-                                            <dd className="text-base font-medium text-gray-900 ">0</dd>
+                                            <dl className="flex items-center justify-between gap-4">
+                                                <dt className="text-base font-normal text-gray-500 dark:text-gray-400">General Sales Tax</dt>
+                                                <dd className="text-base font-medium text-gray-900 ">0</dd>
+                                            </dl>
+                                        </div>
+
+                                        <dl className="flex items-center justify-between gap-4 border-t border-gray-200 pt-2 dark:border-gray-700">
+                                            <dt className="text-base font-bold text-gray-900 ">Total</dt>
+                                            <dd className="text-base font-bold text-gray-900 ">{priceValidatedProducts.length > 0 ? (priceValidatedProducts).reduce((sum, item) => sum + item.price * (cartItems.find((product) => product._id === item._id)?.quantity), 0) : ""} PKR</dd>
                                         </dl>
                                     </div>
 
-                                    <dl className="flex items-center justify-between gap-4 border-t border-gray-200 pt-2 dark:border-gray-700">
-                                        <dt className="text-base font-bold text-gray-900 ">Total</dt>
-                                        <dd className="text-base font-bold text-gray-900 ">{priceValidatedProducts.length > 0 ? (priceValidatedProducts).reduce((sum,item)=> sum + item.price * (cartItems.find((product)=>product._id === item._id)?.quantity), 0) : ""} PKR</dd>
-                                    </dl>
+                                    <Link to="/checkout" className="flex bg-blue-600 text-white w-full items-center justify-center rounded-lg px-5 py-2.5 text-sm font-medium hover:bg-primary-800 focus:outline-none focus:ring-4 dark:focus:ring-primary-800">Proceed to Checkout</Link>
+
+                                    <div className="flex items-center justify-center gap-2">
+                                        <span className="text-sm font-normal text-gray-500 dark:text-gray-400"> or </span>
+                                        <Link to="/shop" title="" className="inline-flex items-center gap-2 text-sm font-medium text-primary-700 underline hover:no-underline dark:text-primary-500">
+                                            Continue Shopping
+                                            <svg className="h-5 w-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 12H5m14 0-4 4m4-4-4-4" />
+                                            </svg>
+                                        </Link>
+                                    </div>
                                 </div>
 
-                                <Link to="/checkout" className="flex bg-blue-600 text-white w-full items-center justify-center rounded-lg px-5 py-2.5 text-sm font-medium hover:bg-primary-800 focus:outline-none focus:ring-4 dark:focus:ring-primary-800">Proceed to Checkout</Link>
-
-                                <div className="flex items-center justify-center gap-2">
-                                    <span className="text-sm font-normal text-gray-500 dark:text-gray-400"> or </span>
-                                    <Link to="/shop" title="" className="inline-flex items-center gap-2 text-sm font-medium text-primary-700 underline hover:no-underline dark:text-primary-500">
-                                        Continue Shopping
-                                        <svg className="h-5 w-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 12H5m14 0-4 4m4-4-4-4" />
-                                        </svg>
-                                    </Link>
-                                </div>
-                            </div>
-
-                            {/* <div className="space-y-4 rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-800 sm:p-6">
+                                {/* <div className="space-y-4 rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-800 sm:p-6">
                                 <form className="space-y-4">
                                     <div>
                                         <label for="voucher" className="mb-2 block text-sm font-medium text-gray-900 "> Do you have a voucher or gift card? </label>
@@ -247,9 +251,14 @@ const Cart = () => {
                                     <button type="submit" className="flex w-full items-center justify-center rounded-lg bg-primary-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">Apply Code</button>
                                 </form>
                             </div> */}
+                            </div>
                         </div>
                     </div>
-                </div>
+                    :
+                    <div className="py-20 flex items-center flex-col gap-2">
+                        <h2 className="text-3xl font-semibold">No Products Added to cart</h2>
+                        <Link to="/shop" className="w-max bg-blue-600 px-4 py-2 rounded-xl text-white">Shop Now</Link>
+                    </div>}
             </section>
         </>
     )

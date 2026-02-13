@@ -1,5 +1,6 @@
 import { useEffect } from "react"
 import { Link } from "react-router-dom"
+import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
 
 const Navbar = () => {
     const user = localStorage.getItem("user_token") ? localStorage.getItem("user_token") : null
@@ -28,12 +29,19 @@ const Navbar = () => {
                         </svg>
                     </Link>
                     {user ?
-                    <span className="rounded-full border-2 p-1">
-                        <svg width="20" height="20" viewBox="-0.5 0 33 33" xmlns="http://www.w3.org/2000/svg"><title>user</title><path d="M16.5 0a9.5 9.5 0 0 1 4.581 17.825C27.427 19.947 32 25.94 32 33h-2c0-7.732-6.268-14-14-14S2 25.268 2 33H0c0-7.3 4.888-13.458 11.57-15.379A9.5 9.5 0 0 1 16.5 0m0 2a7.5 7.5 0 1 0 0 15 7.5 7.5 0 0 0 0-15" fill="#252528"/></svg>
-                    </span>
-                    :
-                    
-                    <Link to="/user/login">User</Link>}
+                        <Menu as="div" className="relative">
+                            <MenuButton className="rounded-full block border-2 p-1" as="span">
+                                    <svg width="20" height="20" viewBox="-0.5 0 33 33" xmlns="http://www.w3.org/2000/svg"><title>user</title><path d="M16.5 0a9.5 9.5 0 0 1 4.581 17.825C27.427 19.947 32 25.94 32 33h-2c0-7.732-6.268-14-14-14S2 25.268 2 33H0c0-7.3 4.888-13.458 11.57-15.379A9.5 9.5 0 0 1 16.5 0m0 2a7.5 7.5 0 1 0 0 15 7.5 7.5 0 0 0 0-15" fill="#252528" /></svg>
+                            </MenuButton>
+                            <MenuItems as="ul" className="bg-gray-100 focus:none outline:none focus-visible:outline-none p-4 absolute rounded-xl shadow flex flex-col space-y-2">
+                                <MenuItem as="li" className="w-max">
+                                    <p className="text-sm">My Orders</p>
+                                </MenuItem>
+                            </MenuItems>
+                        </Menu>
+                        :
+
+                        <Link to="/user/login">User</Link>}
                     <Link to="/admin/login">Admin</Link>
                 </div>
             </div>

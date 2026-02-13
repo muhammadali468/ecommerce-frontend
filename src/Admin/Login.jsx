@@ -2,10 +2,12 @@ import { useEffect, useState } from "react"
 import ErrorMessage from "../Components/ErrorMessage";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom"
+import Loader from "../Components/Loader"
 const Login = () => {
     const [showToast, setShowToast] = useState(false);
     const [msg, setMsg] = useState("");
     const [type, setType] = useState("");
+    const [loading, setLoading] = useState(false)
     const navigate = useNavigate();
     const VITE_APP_ADMIN_LOGIN = import.meta.env.VITE_APP_ADMIN_LOGIN
     const [adminData, setAdminData] = useState({
@@ -13,13 +15,13 @@ const Login = () => {
         adminPassword: "",
     });
 
-    useEffect(()=>{
+    useEffect(() => {
         const admin_token = localStorage.getItem("admin_token")
-        if(admin_token){
+        if (admin_token) {
             alert("Already Logged in!")
             navigate("/admin/home")
         }
-    },[])
+    }, [])
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -33,7 +35,9 @@ const Login = () => {
         e.preventDefault();
 
         try {
+            setLoading(true)
             const res = await axios.post(VITE_APP_ADMIN_LOGIN, adminData);
+            setLoading(false)
             setShowToast(true)
             setTimeout(() => { setShowToast(false) }, 3000)
             if (res.data.sts === 0) {
@@ -52,16 +56,18 @@ const Login = () => {
                 setMsg(res.data.msg)
                 setType("error")
             }
-            if(adminData.adminEmail && res.data.sts === 2){
+            if (adminData.adminEmail && res.data.sts === 2) {
                 localStorage.setItem("tem_email", adminData.adminEmail)
             }
         }
         catch (error) {
             console.log(res.data.error)
+            setLoading(false)
         }
     }
     return (
         <>
+            {loading ? <Loader /> : ""}
             <ErrorMessage showToast={showToast} msg={msg} type={type} />
             <div className="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
                 <div className="sm:mx-auto sm:w-full sm:max-w-sm">

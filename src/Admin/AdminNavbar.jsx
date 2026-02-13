@@ -8,7 +8,7 @@ const AdminNavbar = () => {
     const BASE_URL = window.location.hostname === "localhost" ? import.meta.VITE_APP_LOCAL_BASE_URL : import.meta.VITE_APP_DEV_BASE_URL
     const handleLogout = async () => {
         try {
-            const res = await axios.post(`${BASE_URL}/api/admin/logout`, { token })
+            const res = await axios.post(`${BASE_URL}/api/admin-logout`, { token })
             alert(res.data.msg)
             if (res.data.sts === 0) {
                 localStorage.removeItem("admin_id");
@@ -19,7 +19,7 @@ const AdminNavbar = () => {
             }
         }
         catch (error) {
-            console.groupEnd(error);
+            console.log(error);
         }
     }
     return (

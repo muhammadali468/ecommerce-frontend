@@ -7,9 +7,10 @@ import axios from "axios";
 const CheckOut = () => {
     const userName = localStorage.getItem("user_name")
     const userEmail = localStorage.getItem("user_email")
+    const userToken = localStorage.getItem("user_token")
     const navigate = useNavigate()
     const [cartItems, setCartItems] = useState(JSON.parse(localStorage.getItem("cart") || "[]"));
-    const [productIds, setProductIds] = useState(cartItems.map(item => item._id ))
+    const [productIds, setProductIds] = useState(cartItems.map(item => item._id))
     const [priceValidatedProducts, setPriceValidatedProducts] = useState([])
     const [loading, setLoading] = useState(false);
     const [deliveryCharges, setDeliveryCharges] = useState(0);
@@ -24,7 +25,6 @@ const CheckOut = () => {
         totalAmount: 0,
         deliveryType: "",
     })
-
     useEffect(() => {
         if (!checkoutData.deliveryType) return;
         const charges = checkoutData.deliveryType === "normal" ? 500 : 1000;
@@ -32,22 +32,35 @@ const CheckOut = () => {
     }, [checkoutData.deliveryType]);
 
     const handlePlaceOrder = async (e) => {
-        // e.preventDefault()
+        e.preventDefault()
         try {
             setLoading(true)
-            const orderPlaced = await axios.post(`${BASE_URL}/api/order`, checkoutData);
+            const orderPlaced = await axios.post(`${BASE_URL}/api/user/order`, checkoutData,
+                {
+                    headers: {
+                        Authorization: `Bearer ${userToken}`
+                    }
+                }
+            );
             setLoading(false)
-            if(orderPlaced.data.sts === 0){
+            if(orderPlaced.status === 401){
+                navigate("/user/login")
+            }
+            if (orderPlaced.data.sts === 0) {
                 alert(`Thanks for placing order with us, this is your order id : ${orderPlaced.data.orderId}`)
                 navigate("/shop")
-            } 
+            }
         } catch (error) {
             setLoading(false)
+            // navigate("/user/login")
             console.log(error)
         }
-        
-
     }
+    useEffect(() => {
+        if (!userToken) {
+            navigate("/user/login")
+        }
+    }, [])
     useEffect(() => {
         console.log(checkoutData)
     }, [checkoutData])
@@ -55,9 +68,11 @@ const CheckOut = () => {
     useEffect(() => {
         const handleFetchPrice = async () => {
             setLoading(true)
-            const fetchPrice = await axios.post(`${BASE_URL}/api/calculateProductPrice`, { productIds });
+            const fetchPrice = await axios.post(`${BASE_URL}/api/public/calculateProductPrice`, { productIds });
             const fetchedPrices = fetchPrice.data.products
+            console.log(fetchPrice.data)
             setPriceValidatedProducts(fetchedPrices);
+            console.log(fetchedPrices)
             setLoading(false)
         }
         handleFetchPrice()
@@ -133,7 +148,7 @@ const CheckOut = () => {
                                     </div>
                                     <div className="">
                                         <label for="customerPhone" className="mb-2 block text-sm font-medium text-gray-900 "> Phone Number* </label>
-                                        <input onChange={handleChange} value={checkoutData.customerPhone} type="text" name="customerPhone" id="customerPhone" className="z-20 rounded-lg block w-full border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-500 focus:ring-primary-500 dark:border-gray-600 dark:border-s-gray-700    dark:placeholder:text-gray-400 dark:focus:border-primary-500" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="+92-3012345678" required />
+                                        <input onChange={handleChange} value={checkoutData.customerPhone} type="text" name="customerPhone" id="customerPhone" className="z-20 rounded-lg block w-full border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-500 focus:ring-primary-500 dark:border-gray-600 dark:border-s-gray-700    dark:placeholder:text-gray-400 dark:focus:border-primary-500" placeholder="+92-3012345678" required />
                                     </div>
                                     <div className="col-span-2">
                                         <div className="mb-2 flex items-center gap-2">

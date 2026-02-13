@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
+import Loader from "../Components/Loader";
 
 const UserLogin = () => {
     const [user, setUser] = useState({
@@ -8,6 +9,7 @@ const UserLogin = () => {
         password: ""
     })
     const navigate = useNavigate()
+    const [loading, setLoading] = useState(false)
     const BASE_URL = window.location.hostname === "localhost" ? import.meta.env.VITE_APP_LOCAL_BASE_URL : import.meta.env.VITE_APP_DEV_BASE_URL
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -27,21 +29,26 @@ const UserLogin = () => {
     const handleLogin = async (e) => {
         e.preventDefault()
         try {
-            const res = await axios.post(`${BASE_URL}/api/user/login`, user)
+            setLoading(true)
+            const res = await axios.post(`${BASE_URL}/api/public/login`, user)
+            setLoading(false)
             alert(res.data.msg)
             if (res.data.sts === 0) {
                 localStorage.setItem("user_email", res.data.email);
                 localStorage.setItem("user_name", res.data.name);
                 localStorage.setItem("user_token", res.data.token);
-                navigate(-1);
+                navigate("/shop");
             }
 
         } catch (error) {
             console.log(error)
+            setLoading(false)
+
         }
     }
     return (
         <>
+            {loading ? <Loader/> : ""}
             <form action="#" method="POST" className="max-w-lg border shadow-lg p-8 rounded-2xl mx-auto my-20 space-y-6">
                 <div className="text-4xl text-center">Logo</div>
                 <h1 className="inter-tight-bold text-center">User Login</h1>

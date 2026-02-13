@@ -6,7 +6,7 @@ const UserHome = () => {
   const [products, setProducts] = useState([])
   const BASE_URL = window.location.hostname === "localhost" ? import.meta.env.VITE_APP_LOCAL_BASE_URL : import.meta.env.VITE_APP_DEV_BASE_URL
   const handleFetchProducts = async () => {
-    const res = await axios.get(`${BASE_URL}/api/products/get`);
+    const res = await axios.get(`${BASE_URL}/api/public/products/get`);
     if (res) {
       setProducts(res.data.product);
     }
